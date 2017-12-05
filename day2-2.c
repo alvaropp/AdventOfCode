@@ -28,7 +28,6 @@ int main(void) {
   char line[1024], *p, *e;
   int v, count=0;
   while (fgets(line, sizeof(line), myFile)) {
-    printf("New line\n");
     count = 0;
     p = line;
     for (p = line; ; p = e) {
@@ -39,35 +38,20 @@ int main(void) {
       lineNumbers[count] = v;
       count++;
     }
-    // Now lineNumbers contains all numbers of the line
-    for (int i=0; i<16; i++) {
-      printf("%d  ", lineNumbers[i]);
-    }
-    printf("\n");
-
-    // Sort
+    // Now lineNumbers contains all numbers of the line, sort
     qsort(lineNumbers, 16, sizeof(int), compare);
-
-    // Print sorted
-    for (int i=0; i<16; i++) {
-      printf("%d  ", lineNumbers[i]);
-    }
-    printf("\n");
 
     // Compare each value with only the next ones (as they are sorted)
     for (int i=0; i<16; i++) {
       for (int j=i+1; j<16; j++) {
         if (lineNumbers[i] % lineNumbers[j] == 0) {
-          printf("Pair = %d, %d. Division = %d\n", lineNumbers[i],
-                                                   lineNumbers[j],
-                                                   lineNumbers[i]/lineNumbers[j]);
           sum += lineNumbers[i]/lineNumbers[j];
           i = j = 16; break;
         }
       }
     }
-    printf("\n\n");
   }
+  
   printf("Solution = %d\n", sum);
   return 0;
 }

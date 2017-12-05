@@ -15,7 +15,6 @@ int main(void) {
   char line[1024], *p, *e;
   int v;
   while (fgets(line, sizeof(line), myFile)) {
-    printf("New line\n");
     p = line;
     for (p = line; ; p = e) {
       v = strtol(p, &e, 10);
@@ -32,6 +31,7 @@ int main(void) {
     min = 999999;
     max = 0;
   }
+  
   printf("Solution = %d\n", sum);
   return 0;
 }
