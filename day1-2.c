@@ -11,16 +11,15 @@ int main(void) {
     fscanf(myFile, "%1d", &numbers[i]);
   }
 
+  // Find half-way around distance
+  int half = 2042/2;
+
   // Check for repeated values and sum
   int sum = 0;
-  for (int i=0; i<2041; i++) {
-    if (numbers[i] == numbers[i+1]) {
+  for (int i=0; i<2042; i++) {
+    if (numbers[i] == numbers[(i+half) % 2042]) {
       sum += numbers[i];
     }
-  }
-  // last digit with first digit
-  if (numbers[2041] == numbers[0]) {
-    sum += numbers[0];
   }
 
   printf("Solution = %d\n", sum);
