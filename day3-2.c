@@ -40,7 +40,6 @@ int main(void) {
       coords[1]++;
       value = checkNeighbours(coords, array, maskX, maskY);
       array[coords[0]][coords[1]] = value;
-      printf("Coords = [%d ,%d], value = %d, counter = %d\n", coords[0], coords[1], value, counter);
       if (value >= input) {
         break;
       }
@@ -54,7 +53,6 @@ int main(void) {
       coords[0]--;
       value = checkNeighbours(coords, array, maskX, maskY);
       array[coords[0]][coords[1]] = value;
-      printf("Coords = [%d, %d], value = %d, counter = %d\n", coords[0], coords[1], value, counter);
       if (value >= input) {
         break;
       }
@@ -68,7 +66,6 @@ int main(void) {
       coords[1]--;
       value = checkNeighbours(coords, array, maskX, maskY);
       array[coords[0]][coords[1]] = value;
-      printf("Coords = [%d, %d], value = %d, counter = %d\n", coords[0], coords[1], value, counter);
       if (value >= input) {
         break;
       }
@@ -82,7 +79,6 @@ int main(void) {
       coords[0]++;
       value = checkNeighbours(coords, array, maskX, maskY);
       array[coords[0]][coords[1]] = value;
-      printf("Coords = [%d, %d], value = %d, counter = %d\n", coords[0], coords[1], value, counter);
       if (value >= input) {
         break;
       }
@@ -96,7 +92,6 @@ int main(void) {
       coords[1]++;
       value = checkNeighbours(coords, array, maskX, maskY);
       array[coords[0]][coords[1]] = value;
-      printf("Coords = [%d, %d], value = %d, counter = %d\n", coords[0], coords[1], value, counter);
       if (value >= input) {
         break;
       }
