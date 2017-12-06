@@ -27,6 +27,7 @@ int manhattanDistance(int input, int n) {
   } else {
     mh = start - groupSize/2 + 1 + (posGroup - groupSize/2 + 1);
   }
+  return mh;
 }
 
 int main(void) {
