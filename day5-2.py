@@ -22,5 +22,4 @@ with open("day5.txt") as f:
     maze = [int(x.strip()) for x in maze]
 
 jumps = solve(maze)
-
 print("Solution = ", jumps)
