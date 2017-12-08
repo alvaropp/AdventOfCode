@@ -1,8 +1,10 @@
 #include <stdio.h>
 #define n 4
-#define T 1000
+#define T 4
 
 int compareState(int a[n], int b[n]) {
+  printf("%d %d %d %d\n", a[0], a[1], a[2], a[3]);
+  printf("%d %d %d %d\n", b[0], b[1], b[2], b[3]);
   int equal = 1;
   for (int i=0; i<n; i++) {
     if (a[i] != b[i]) {
@@ -10,12 +12,13 @@ int compareState(int a[n], int b[n]) {
       break;
     }
   }
+  printf("equal = %d\n", equal);
   return equal;
 }
 
-int saveState(int *state, int **states, int t) {
+void saveState(int state[n], int stateHistory[], int t) {
   for (int i=0; i<n; i++) {
-    states[t][i] = state[i];
+    stateHistory[t][i] = state[i];
   }
 }
 
@@ -32,8 +35,6 @@ void updateState(int *state) {
   // Delete all blocks from maximum
   int blocks = state[pos];
   state[pos] = 0;
-  printf("Max = %d, Pos = %d, Blocks = %d\n", max, pos, blocks);
-  printf("\n");
 
   // Reallocate one by one
   for (int b=0; b<blocks; b++) {
@@ -59,9 +60,8 @@ int main(void) {
   // Store all historical states
   int states[T][n];
   // save the current one
-  printf("State ");
   int t = 0;
-  saveState(state, states, t);
+  saveState(state, &state, t);
   for (t=1; t<T; t++) {
     // Update state
     updateState(state);
