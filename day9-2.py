@@ -1,19 +1,6 @@
-
-# coding: utf-8
-
-# In[55]:
-
-data = "{{<a!>},{<a!>},{<a!>},{<ab>}}"
-
-
-# In[61]:
-
 filename = "day9.txt"
 with open(filename) as f:
     data = f.readlines()[0].strip()
-
-
-# In[62]:
 
 def process(data):
     dataClean = ""
@@ -42,16 +29,10 @@ def process(data):
         data = "".join(dataL)
         # Keep track of the number of deleted items
         deleted += (end - start - 1)
-    
+
     # Clean all ","s
     data = data.replace(",", "")
     return data, deleted
 
 data, deleted = process(data)
 print("Deleted = ", deleted)
-
-
-# In[ ]:
-
-
-
