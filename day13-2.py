@@ -15,7 +15,7 @@ scannersStart = scanners.copy()
 positionsStart = positions.copy()
 directionsStart = directions.copy()
 
-# Brute force delays until severity = 0
+# Brute force delays until not caught
 for delay in range(20000000):
     player = -1
     caught = 0
