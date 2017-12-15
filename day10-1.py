@@ -1,8 +1,3 @@
-
-# coding: utf-8
-
-# In[110]:
-
 def solve(data, lengths):
     pos = 0
     skip = 0
@@ -25,9 +20,6 @@ def solve(data, lengths):
         print("Data = ", data, '\n')
     return data
 
-
-# In[120]:
-
 data = list(range(256))
 with open("day10.txt") as f:
     lengths = [int(x) for x in f.readline().strip().split(",")]
@@ -35,9 +27,3 @@ with open("day10.txt") as f:
 data = solve(data, lengths)
 
 print("Result = ", data[0]*data[1])
-
-
-# In[ ]:
-
-
-
