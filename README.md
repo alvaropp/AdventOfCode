@@ -1,2 +1,2 @@
-# AdventOfCode2017
+# Advent Of Code
 Attempt using C and Python
