@@ -7,7 +7,7 @@ def loadData(file):
     return data
 
 def solve(data):
-    
+
     def parseInstruction(inst):
         inst = inst[:-1].split()
         command = inst[0]
