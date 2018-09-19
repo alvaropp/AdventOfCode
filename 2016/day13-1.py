@@ -24,8 +24,11 @@ def bfs():
     while not q.empty():
         current = q.get()
         for move in moves:
-            following = (current[0] + move[0], current[1] + move[1], current[2] + 1)
-            if (not ((following[0], following[1]) in explored)) and (checkEmptySpace(following)) and \
+            following = (current[0] + move[0],
+                         current[1] + move[1],
+                         current[2] + 1)
+            if (not ((following[0], following[1]) in explored)) and \
+               (checkEmptySpace(following)) and \
                (following[0] >= 0) and (following[1] >= 0):
                 explored[following[0], following[1]] = current[2] + 1
                 q.put(following)
