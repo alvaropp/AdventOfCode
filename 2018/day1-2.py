@@ -1,7 +1,7 @@
 import numpy as np
 
 
-data = np.loadtxt('2018/day1.txt', dtype='int')
+data = np.loadtxt('day1.txt', dtype='int')
 sequence = np.cumsum(list(data) * 1000)
 
 aset = set()

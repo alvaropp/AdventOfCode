@@ -1,4 +1,4 @@
-with open('2018/day2.txt') as f:
+with open('day2.txt') as f:
     data = f.read().splitlines()
 
 n2 = 0
