@@ -15,9 +15,11 @@ def go(data, pos):
     return data, pos
 
 
+data_original = list(np.genfromtxt("day2.txt", delimiter=",", dtype=int))
+
 for noun in range(100):
     for verb in range(100):
-        data = np.genfromtxt("day2.txt", delimiter=",", dtype=int)
+        data = data_original[:]
         data[1] = noun
         data[2] = verb
         pos = 0
