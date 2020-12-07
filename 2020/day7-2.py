@@ -1,23 +1,16 @@
+import re
+
 with open("day7.txt", "r") as f:
     rules = f.read().splitlines()
 
-bags = [" ".join(bag.split(" ", 2)[:2]) for bag in rules]
+rules = [rule.replace(" bags contain ", ", ") for rule in rules]
+bags = [rule.split(", ")[0] for rule in rules]
 options = [
-    [
-        " ".join(bag.strip().split(" ", 3)[:-1])
-        for bag in rule.split("contain ")[1].split(",")
-    ]
+    {pair[1]: int(pair[0]) for pair in re.findall(r"(\d+) (\w+ \w+)", rule)}
     for rule in rules
 ]
-options = [[bag.split(" ", 1)[::-1] for bag in option] for option in options]
-options = [
-    {bag[0]: int(bag[1]) if "no" not in bag[1] else None for bag in option}
-    for option in options
-]
-rules = {
-    bag: options if "other" not in options else {}
-    for bag, options in zip(bags, options)
-}
+rules_graph = {bag: options for bag, options in zip(bags, options)}
+
 my_bag = "shiny gold"
 
 
@@ -33,5 +26,5 @@ def count_bags_dfs(graph, start):
     return total_bags - 1  # we are also counting the outer bag, so remove one
 
 
-count = count_bags_dfs(rules, my_bag)
+count = count_bags_dfs(rules_graph, my_bag)
 print(count)
