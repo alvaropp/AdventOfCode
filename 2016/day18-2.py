@@ -29,7 +29,7 @@ def span_new_row(row_above):
 # Can save memory by counting on the fly and rewriting on the same row,
 # but no need here given the size of the problem
 all_rows = [row]
-for _ in range(400000-1):
+for _ in range(400000 - 1):
     all_rows.append(span_new_row(all_rows[-1]))
 
 total_safe_tiles = sum(row.count(".") - 2 for row in all_rows)
