@@ -12,7 +12,6 @@ def solve(numbers, n_iter):
             last_number = 0
         else:
             last_number = number_idx[last_number][-1] - number_idx[last_number][-2]
-            number_idx[last_number]
         number_idx[last_number].append(idx)
         idx += 1
 
