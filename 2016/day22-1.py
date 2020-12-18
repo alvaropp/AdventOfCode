@@ -1,4 +1,3 @@
-# %%
 from dataclasses import dataclass
 
 
@@ -21,7 +20,7 @@ for line in data[2:]:
     nodes.append(
         Node(int(x[1:]), int(y[1:]), int(size[:-1]), int(used[:-1]), int(avail[:-1]))
     )
-# %%
+
 viable_pairs = 0
 for i in range(len(nodes)):
     for j in range(i + 1, len(nodes)):
@@ -31,4 +30,4 @@ for i in range(len(nodes)):
             viable_pairs += 1
 
 print(viable_pairs)
-# %%
+
