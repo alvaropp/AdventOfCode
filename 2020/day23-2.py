@@ -1,56 +1,32 @@
-# %%
-def solve(cups, n_rounds):
-    curr = cups.head
-    for _ in range(n_rounds):
-
-        start_remove = curr.next.data
-        removed = cups.remove(start_remove, length=3)
-
-        destination = curr.data
-        while True:
-            destination = (destination - 1) % (n_cups + 1)
-            destination_node = cups.find(destination)
-            if destination_node:
-                break
-
-        cups.insert_after(destination_node.data, removed)
-
-        curr = curr.next
-
-    result = ""
-    node = cups.find(1)
-    for _ in range(n_cups - 1):
-        node = node.next
-        result += f"{node.data}"
-    return result
-
-
-# %%
 class ListNode:
-    """
-    A node in a singly-linked list.
-    """
-
-    def __init__(self, data=None, next=None):
+    def __init__(self, data=None, next=None, prev=None):
         self.data = data
         self.next = next
+        self.prev = prev
 
     def __repr__(self):
         return repr(self.data)
 
 
-class CircularLinkedList:
+class CircularDoublyLinkedList:
     def __init__(self, list):
+        # Keep track of all the nodes to save look-up time
+        self.nodes = {}
 
-        self.head = ListNode(data=list[0], next=list[0])
+        # Head
+        self.head = ListNode(data=list[0], next=list[0], prev=list[0])
         prev = self.head
+        self.nodes[list[0]] = self.head
 
+        # Load data
         for data in list[1:]:
-            new = ListNode(data=data)
+            new = ListNode(data=data, prev=prev)
+            self.nodes[data] = new
             prev.next = new
             prev = new
 
         new.next = self.head
+        self.head.prev = new
 
     def __repr__(self):
         nodes = []
@@ -63,77 +39,69 @@ class CircularLinkedList:
         return "[" + ", ".join(nodes) + "]"
 
     def find(self, key):
-        curr = self.head
-        while curr and curr.data != key:
-            curr = curr.next
-            if curr == self.head:
-                return None
-        return curr
+        return self.nodes.get(key, None)
 
-    def append(self, data):
-        if not self.head:
-            self.head = ListNode(data=data)
-            return
-        curr = self.head
-        while (curr.next) and (curr.next != self.head):
-            curr = curr.next
-        curr.next = ListNode(data=data, next=self.head)
+    def remove(self, start_node, length=1):
+        # build a circular sublist
+        end_node = start_node
+        removed_head = bool(start_node == self.head)
+        for _ in range(length - 1):
+            end_node = end_node.next
+            if end_node == self.head:
+                removed_head = True
 
-    def remove(self, key, length=1):
-        curr = self.head
-        prev = None
-        while curr and curr.data != key:
-            prev = curr
-            curr = curr.next
+        if removed_head:
+            self.head = end_node.next
 
-        # unlink `length` number of nodes from the list
-        data_to_remove = [curr.data]
-        if prev is None:
-            last = self.head
-            while True:
-                if last.next == self.head:
-                    break
-                last = last.next
+        # tie the ends of the remaining of the original list
+        start_node.prev.next = end_node.next
+        end_node.next.prev = start_node.prev
 
-            for _ in range(length - 1):
-                curr = curr.next
-                data_to_remove.append(curr.data)
-            self.head = curr.next
-            last.next = self.head
+        return (start_node, start_node.next, end_node)
 
-        elif curr:
-            crossed_head = False
-            for _ in range(length - 1):
-                curr = curr.next
-                data_to_remove.append(curr.data)
-                if curr == self.head:
-                    crossed_head = True
-            prev.next = curr.next
-            if crossed_head:
-                self.head = prev.next
-        return data_to_remove
-
-    def insert_after(self, key, data_list):
-        node = self.find(key)
-        prev = node
-        old_next = prev.next
-        for data in data_list:
-            prev.next = ListNode(data=data)
-            prev = prev.next
-        prev.next = old_next
+    def insert_after(self, node, start_node, end_node):
+        node.next.prev = end_node
+        end_node.next = node.next
+        node.next = start_node
+        start_node.prev = node
 
 
-# %%
-# n_cups = 1000000
-n_rounds = 100
+def solve(cups, n_rounds):
+    curr = cups.head
 
-with open("test.txt", "r") as f:
+    for _ in range(n_rounds):
+
+        start_remove = curr.next
+        to_remove = cups.remove(start_remove, length=3)
+        removed_values = [node.data for node in to_remove]
+        destination = curr.data
+        while True:
+            destination = (destination - 1) % (n_cups + 1)
+            if destination in removed_values:
+                continue
+            elif destination > 0:
+                destination_node = cups.find(destination)
+                break
+
+        cups.insert_after(destination_node, to_remove[0], to_remove[-1])
+
+        curr = curr.next
+
+    node = cups.find(1)
+    result = 1
+    for _ in range(2):
+        node = node.next
+        result *= node.data
+    return result
+
+
+n_cups = 1000000
+n_rounds = 10000000
+
+with open("day23.txt", "r") as f:
     data = list(map(int, list(f.read().strip())))
+data.extend(range(len(data) + 1, n_cups + 1))
 
-n_cups = len(data)
-# data.extend(range(len(data)+1, n_cups+1))
+cups = CircularDoublyLinkedList(data)
 
-cups = CircularLinkedList(data)
-
-solve(cups, n_rounds)
-# %%
+print(solve(cups, n_rounds))
