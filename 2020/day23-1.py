@@ -51,7 +51,6 @@ class CircularLinkedList:
             prev = curr
             curr = curr.next
 
-        # unlink `length` number of nodes from the list
         data_to_remove = [curr.data]
         if prev is None:
             last = self.head
@@ -88,24 +87,17 @@ class CircularLinkedList:
         prev.next = old_next
 
 
-# %%
 with open("day23.txt", "r") as f:
     data = list(map(int, list(f.read().strip())))
 
 cups = CircularLinkedList(data)
 n_cups = len(data)
-# %%
 curr = cups.head
 
 for round in range(100):
 
-    # print(f"-- move {round+1} --")
-    # print(f"cups: {cups}, {curr}")
-
     start_remove = curr.next.data
     removed = cups.remove(start_remove, length=3)
-
-    # print(f"pick up: {removed}")
 
     destination = curr.data
     while True:
@@ -114,12 +106,7 @@ for round in range(100):
         if destination_node:
             break
 
-    # print("destination: ", destination_node)
-    # print()
-
     cups.insert_after(destination_node.data, removed)
-
-    # print(round)
 
     curr = curr.next
 
