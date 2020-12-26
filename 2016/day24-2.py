@@ -31,6 +31,7 @@ class Maze:
             for j in range(self.n_cols):
                 if self.maze[i][j] == "0":
                     self.start = (i, j)
+                    self.keypoints[self.maze[i][j]] = (i, j)
                 elif self.maze[i][j].isdigit():
                     self.keypoints[self.maze[i][j]] = (i, j)
 
@@ -104,11 +105,12 @@ def solve(maze, keypoint_order, max_steps=float("Inf")):
 
 with open("day24.txt", "r") as f:
     maze = Maze([list(line) for line in f.read().splitlines()])
-keypoint_orders = list(permutations(maze.keypoints))
+keypoint_orders = list(permutations([k for k in maze.keypoints.keys() if k != "0"]))
 priority_keypoint_orders = PriorityQueue()
 for keypoint_order in keypoint_orders:
-    priority_keypoint_orders.put(keypoint_order, estimate_steps(keypoint_order, maze))
-
+    priority_keypoint_orders.put(
+        keypoint_order + tuple("0"), estimate_steps(keypoint_order, maze)
+    )
 
 min_number_steps = float("Inf")
 best_path = None
