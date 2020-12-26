@@ -1,3 +1,6 @@
+# This website is absolutely genius for learning graph algorithms:
+# https://www.redblobgames.com/pathfinding/a-star/introduction.html
+
 import heapq
 from itertools import permutations
 from functools import lru_cache
