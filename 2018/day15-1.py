@@ -1,5 +1,6 @@
 # %%
 import heapq
+import itertools
 from dataclasses import dataclass, field
 
 # %%
@@ -54,12 +55,14 @@ class Player:
 
     def attack(self, enemy, maze):
         enemy.hit_points -= self.attack_power
-        if enemy.hit_points == 0:
+        if enemy.hit_points <= 0:
+            # print("DEAD: ", enemy)
+            maze.maze[enemy.pos[0]][enemy.pos[1]] = "."
             if enemy.race == "G":
-                maze.goblins.pop(enemy)
+                maze.goblins.remove(enemy)
             else:
-                maze.elves.pop(enemy)
-            maze.all_players.pop(enemy)
+                maze.elves.remove(enemy)
+            maze.all_players.remove(enemy)
 
     def move(self, maze):
         enemies = maze.elves if self.race == "G" else maze.goblins
@@ -70,6 +73,8 @@ class Player:
             maze.a_star_search(self.pos, destination[0]) for destination in pos_in_range
         ]
         distances = [path[1].get(tuple(pos[0]), float("Inf")) for pos, path in zip(pos_in_range, paths)]
+        if all(distance == float("Inf") for distance in distances):
+            return None
         idx = [i for i, dist in enumerate(distances) if dist == min(distances)]
         closest_pos = sorted(
             [(i, pos) for i, pos in enumerate(pos_in_range) if i in idx],
@@ -77,9 +82,12 @@ class Player:
         )
         chosen_idx = closest_pos[0][0]
         maze.maze[self.pos[0]][self.pos[1]] = "."
-        self.pos = maze.first_step_in_path(
-            paths[chosen_idx][0], self.pos, tuple(closest_pos[0][1][0])
-        )
+        try:
+            self.pos = maze.first_step_in_path(
+                paths[chosen_idx][0], self.pos, tuple(closest_pos[0][1][0])
+            )
+        except:
+            print("hmm")
         maze.maze[self.pos[0]][self.pos[1]] = self.race
 
 
@@ -167,21 +175,28 @@ class Maze:
         return came_from, cost_so_far
 
 
-with open("test.txt", "r") as f:
+with open("day15.txt", "r") as f:
     data = [list(line) for line in f.read().splitlines()]
 
 maze = Maze(data)
 
-n_rounds = 3
-for _ in range(n_rounds):
-    print(maze)
-    print()
+
+for round in itertools.count():
+    # print(round)
+    # print(maze)
+    # print([player.hit_points for player in maze.all_players])
+    # print()
 
     maze.sort_players()
 
     for i, player in enumerate(maze.all_players):
         player.action(maze)
+    
+    
+    if (not maze.elves) or (not maze.goblins):
+        break
 
-print(maze)
+print(round)
+print([player.hit_points for player in maze.all_players])
 
 # %%
