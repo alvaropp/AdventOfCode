@@ -27,16 +27,28 @@ class Player:
     adjacent: list = field(default_factory=list)
 
     def compute_adjacent(self, maze):
-        self.adjacent = maze.compute_adjacent(self.pos)
+        adjacent = []
+        for move in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            neigh = (self.pos[0] + move[0], self.pos[1] + move[1])
+            if (
+                (0 <= neigh[0] <= maze.n_rows)
+                and (0 <= neigh[1] <= maze.n_cols)
+                and (maze.maze[neigh[0]][neigh[1]] != "#")
+            ):
+                adjacent.append(neigh)
+        self.adjacent = adjacent
 
     def action(self, maze):
+        for player in maze.all_players:
+            player.compute_adjacent(maze)
+
         enemies = maze.elves if self.race == "G" else maze.goblins
         enemies_in_range = sorted(
             [enemy for enemy in enemies if self.pos in enemy.adjacent],
             key=lambda enemy: (enemy.hit_points, enemy.pos),
         )
         if enemies_in_range:
-            self.attack(enemies_in_range)
+            self.attack(enemies_in_range[0], maze)
         else:
             self.move(maze)
 
@@ -48,7 +60,6 @@ class Player:
             else:
                 maze.elves.pop(enemy)
             maze.all_players.pop(enemy)
-        self.next_pos = None
 
     def move(self, maze):
         enemies = maze.elves if self.race == "G" else maze.goblins
@@ -58,19 +69,20 @@ class Player:
         paths = [
             maze.a_star_search(self.pos, destination[0]) for destination in pos_in_range
         ]
-        distances = [path[1][tuple(pos[0])] for pos, path in zip(pos_in_range, paths)]
+        distances = [path[1].get(tuple(pos[0]), float("Inf")) for pos, path in zip(pos_in_range, paths)]
         idx = [i for i, dist in enumerate(distances) if dist == min(distances)]
         closest_pos = sorted(
             [(i, pos) for i, pos in enumerate(pos_in_range) if i in idx],
             key=lambda pos: pos[1][0],
         )
         chosen_idx = closest_pos[0][0]
-        self.next_pos = maze.first_step_in_path(
+        maze.maze[self.pos[0]][self.pos[1]] = "."
+        self.pos = maze.first_step_in_path(
             paths[chosen_idx][0], self.pos, tuple(closest_pos[0][1][0])
         )
+        maze.maze[self.pos[0]][self.pos[1]] = self.race
 
 
-# %%
 @dataclass
 class Maze:
     maze: list
@@ -100,6 +112,9 @@ class Maze:
     def __repr__(self):
         return "\n".join("".join(line) for line in self.maze)
 
+    def sort_players(self):
+        pass
+
     def compute_adjacent(self, pos):
         adjacent = []
         for move in ((0, 1), (0, -1), (1, 0), (-1, 0)):
@@ -120,11 +135,9 @@ class Maze:
 
     @staticmethod
     def first_step_in_path(came_from, start, goal):
-        print(came_from)
         current = goal
         path = []
         while current != start:
-            print(current)
             path.append(current)
             current = came_from[current]
         return path[-1]
@@ -154,27 +167,20 @@ class Maze:
         return came_from, cost_so_far
 
 
-# %%
 with open("test.txt", "r") as f:
     data = [list(line) for line in f.read().splitlines()]
 
 maze = Maze(data)
 
-print(maze)
-print()
+n_rounds = 3
+for _ in range(n_rounds):
+    print(maze)
+    print()
 
-for player in maze.all_players:
-    player.compute_adjacent(maze)
+    maze.sort_players()
 
-for player in maze.all_players:
-    player.action(maze)
-
-for player in maze.all_players:
-    maze.maze[player.pos[0]][player.pos[1]] = "."
-
-for player in maze.all_players:
-    player.pos = player.next_pos or player.pos
-    maze.maze[player.pos[0]][player.pos[1]] = player.race
+    for i, player in enumerate(maze.all_players):
+        player.action(maze)
 
 print(maze)
 
