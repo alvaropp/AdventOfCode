@@ -2,7 +2,6 @@ import re
 from copy import deepcopy
 
 import numpy as np
-from numpy.core.arrayprint import _array_repr_implementation
 
 
 def load_problem():
